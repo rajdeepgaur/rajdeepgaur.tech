@@ -1,0 +1,106 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../site';
+import condensed700 from '@fontsource/ibm-plex-sans-condensed/files/ibm-plex-sans-condensed-latin-700-normal.woff2?url';
+import sans400 from '@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff2?url';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Prefix for in-page nav anchors: '' on the homepage, '/' elsewhere. */
+  anchorBase?: string;
+  /** Canonical URL. When set, the page also gets Open Graph, Twitter and JSON-LD tags. */
+  canonical?: string;
+}
+
+const { title = site.seo.title, description, anchorBase = '', canonical } = Astro.props;
+const ogImage = new URL('/og.png', site.url).href;
+const ogImageAlt =
+  'Rajdeep Singh Gaur — A support engineer who builds. 1,500+ support tickets resolved, 100+ WordPress sites built, 4 live projects.';
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  url: `${site.url}/`,
+  jobTitle: 'Technical Support Engineer',
+  sameAs: [site.linkedin, site.github],
+};
+const beaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <meta name="theme-color" content="#EDEEE9" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    {
+      canonical && (
+        <>
+          <link rel="canonical" href={canonical} />
+          <meta property="og:type" content="website" />
+          <meta property="og:url" content={canonical} />
+          <meta property="og:title" content={title} />
+          {description && <meta property="og:description" content={description} />}
+          <meta property="og:image" content={ogImage} />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content={ogImageAlt} />
+          <meta name="twitter:card" content="summary_large_image" />
+          <script is:inline type="application/ld+json" set:html={JSON.stringify(person)} />
+        </>
+      )
+    }
+    <link rel="preload" href={condensed700} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={sans400} as="font" type="font/woff2" crossorigin />
+    <slot name="head" />
+    {
+      beaconToken && (
+        <script
+          is:inline
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={JSON.stringify({ token: beaconToken })}
+        />
+      )
+    }
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Nav anchorBase={anchorBase} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  .skip-link {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 100;
+    padding: 10px 16px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    background: var(--ink);
+    color: var(--card);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    text-decoration: none;
+    border-radius: var(--radius);
+    transform: translateY(-200%);
+  }
+  .skip-link:focus { transform: none; }
+  .skip-link:hover { color: var(--card); }
+</style>

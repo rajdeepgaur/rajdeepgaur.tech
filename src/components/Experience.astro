@@ -1,0 +1,58 @@
+---
+import SectionLabel from './SectionLabel.astro';
+import RoleRow from './RoleRow.astro';
+
+const roles = [
+  {
+    dates: 'May 2024 – Apr 2026',
+    title: 'Site Specialist',
+    org: 'CampusPress · Incsub',
+    stat: { value: '100+', label: 'sites built' },
+    bullets: [
+      'Built 100+ WordPress sites, mainly for educational institutions.',
+      'Worked primarily with FSE themes and Gutenberg, some on Multisite; several highly customized builds with multiple custom post types and fields.',
+      'Migrated content into staging with WP All Import and fixed the issues found in QA checks before each site went live; tested plugins and themes and updated public documentation.',
+    ],
+    chips: ['FSE', 'Gutenberg', 'Multisite', 'WP All Import', 'Custom CSS'],
+  },
+  {
+    dates: 'Oct 2022 – Apr 2024',
+    title: 'Technical Support Engineer',
+    org: 'BlogVault',
+    stat: { value: '1,500+', label: 'tickets · 4 products' },
+    bullets: [
+      'Resolved 1,500+ support tickets across four WordPress products: backups, security, migrations and agency site management.',
+      'Triaged each issue as a product defect, configuration problem or expected behavior before escalating.',
+      'Worked on customer servers via FTP and cPanel (occasionally SSH); relayed customer feedback to the product team and wrote internal documentation.',
+    ],
+    chips: ['BlogVault', 'MalCare', 'Migrate Guru', 'WP Remote'],
+  },
+  {
+    dates: 'Aug 2018 – Sep 2022',
+    title: 'Freelance Web Developer',
+    org: 'Self-employed',
+    bullets: [
+      'Built WordPress sites with Elementor, including custom themes and plugins.',
+      'Built landing pages and ran conversion rate optimization (CRO) for SaaS/B2B clients.',
+      'Core Web Vitals and image optimization, SEO with Yoast and Rank Math, and analytics with GA and GTM.',
+    ],
+    chips: ['Elementor', 'Core Web Vitals', 'Yoast', 'Rank Math', 'GA', 'GTM'],
+  },
+];
+---
+
+<section id="experience" class="container experience">
+  <SectionLabel>03 / EXPERIENCE</SectionLabel>
+  <h2 class="section-title">Since 2018, on both sides of the ticket.</h2>
+  <ol class="roles" role="list">
+    {roles.map((r) => <RoleRow {...r} />)}
+  </ol>
+</section>
+
+<style>
+  .experience { padding-block: 72px 40px; }
+  .roles {
+    margin: 40px 0 0;
+    border-top: 2px solid var(--ink);
+  }
+</style>

@@ -1,0 +1,23 @@
+:root {
+  --page: #EDEEE9;  --ink: #15171A;  --card: #FAFAF7;  --chip: #E3E5DF;
+  --accent: #B4400F;  --accent-on-dark: #F08A5D;  --live: #1E6B47;
+  --muted: #4A4F55;  --body-2: #33373C;
+  --border: #C9CCC4;  --border-soft: #D6D8D1;  --border-dashed: #B9BDB3;
+  --dark: #15171A;  --dark-card: #22252A;  --dark-border: #5A5F66;  --dark-rule: #3A3E44;
+  --dark-text: #C4C7C0;  --dark-label: #A9ADA6;  --on-dark: #EDEEE9;
+
+  --font-sans: 'IBM Plex Sans', 'IBM Plex Sans Fallback', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --font-display: 'IBM Plex Sans Condensed', 'IBM Plex Sans Condensed Fallback', 'IBM Plex Sans', system-ui, sans-serif;
+
+  /* Mobile-first: 20px gutter and 4px shadow below 640px. */
+  --max: 1240px;  --gutter: 20px;
+  --radius: 2px;  --shadow-hard: 4px 4px 0 var(--ink);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --gutter: 40px;
+    --shadow-hard: 6px 6px 0 var(--ink);
+  }
+}

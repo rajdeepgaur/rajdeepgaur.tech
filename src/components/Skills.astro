@@ -1,0 +1,100 @@
+---
+import SectionLabel from './SectionLabel.astro';
+
+const skills = [
+  { name: 'WordPress', items: 'Custom themes and plugins · FSE / block themes · Gutenberg · Elementor · Multisite · custom post types and custom fields · WP All Import' },
+  { name: 'Front end', items: 'HTML · CSS · JavaScript · responsive design · accessibility' },
+  { name: 'Full stack & AI', items: 'Relational databases · authentication · LLM integration · RAG · AI-assisted development (Claude, GitHub Copilot)' },
+  { name: 'Support', items: 'Ticket triage and escalation · root-cause debugging · documentation · customer feedback loops · cross-team collaboration' },
+  { name: 'Performance & SEO', items: 'Core Web Vitals · image optimization · Yoast · Rank Math · Google Analytics · Google Tag Manager' },
+  { name: 'Security & ops', items: 'Security hardening · backups and restores · site migrations · FTP · cPanel · SSH · Git deploy workflows' },
+];
+---
+
+<section class="container skills-certs">
+  <div class="skills">
+    <SectionLabel>04 / SKILLS</SectionLabel>
+    <h2>Toolkit</h2>
+    <dl class="rule">
+      {
+        skills.map((s) => (
+          <div class="row">
+            <dt>{s.name}</dt>
+            <dd>{s.items}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+  <div class="certs">
+    <SectionLabel>05 / CERTIFICATIONS</SectionLabel>
+    <h2>Certifications</h2>
+    <ol class="rule" role="list">
+      <li>
+        <p class="cert"><a href="https://courses.chaicode.com/learn/certificate/14349312-270594" target="_blank" rel="noopener">GenAI with JavaScript{' '}<span aria-hidden="true">↗</span><span class="visually-hidden">(opens in new tab)</span></a></p>
+        <p class="issuer">ChaiCode · Sep 2026</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<style>
+  .skills-certs {
+    padding-block: 72px 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 48px;
+  }
+  .skills { flex: 999 1 600px; min-width: 0; }
+  .certs { flex: 1 1 300px; min-width: 0; }
+
+  h2 {
+    margin: 10px 0 24px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 1.05;
+  }
+
+  .rule { margin: 0; border-top: 2px solid var(--ink); }
+
+  /* Below 640px (not in the canvas) the name sits above its list; from 640px the canvas grid applies. */
+  .row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  @media (min-width: 640px) {
+    .row {
+      grid-template-columns: minmax(140px, 200px) minmax(0, 1fr);
+      gap: 16px;
+    }
+  }
+  dt {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .certs li { padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .cert { font-weight: 600; }
+  /* 44px hit area (§7) without changing the row's spacing or enlarging the focus ring:
+     the extra area is an invisible pseudo-element around the text. */
+  .cert a {
+    position: relative;
+    display: inline-block;
+  }
+  .cert a::after {
+    content: '';
+    position: absolute;
+    inset: -9px 0;
+  }
+  .issuer {
+    margin-top: 2px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+  }
+</style>

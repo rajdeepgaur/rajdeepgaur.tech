@@ -1,0 +1,120 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ProjectImage from './ProjectImage.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { data } = Astro.props.project;
+---
+
+<article class="card">
+  <div class="strip">
+    <span>{data.caseLabel}</span>
+    <span class="status"><span class="dot" aria-hidden="true"></span>{data.status}</span>
+  </div>
+  <ProjectImage src={data.image.src} alt={data.image.alt} bg={data.image.bg} fit={data.image.fit} />
+  <div class="body">
+    <h3>{data.title}</h3>
+    <dl>
+      <dt>PROBLEM</dt><dd>{data.problem}</dd>
+      <dt>BUILT</dt><dd>{data.built}</dd>
+    </dl>
+    <ul class="chips" role="list">
+      {data.tags.map((t) => <li>{t}</li>)}
+    </ul>
+    <div class="links">
+      {
+        data.links.map((l) =>
+          l.href ? (
+            <a href={l.href} target="_blank" rel="noopener">{l.label}{' '}<span aria-hidden="true">↗</span><span class="visually-hidden">(opens in new tab)</span></a>
+          ) : (
+            <span class="plain">{l.label}</span>
+          )
+        )
+      }
+    </div>
+  </div>
+</article>
+
+<style>
+  .card {
+    background: var(--card);
+    border: 1px solid var(--ink);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .strip {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px 12px;
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--ink);
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--live);
+    font-weight: 600;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--live);
+  }
+
+  .body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    flex: 1;
+  }
+
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 1;
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: 84px minmax(0, 1fr);
+    gap: 8px 16px;
+    font-size: 16px;
+  }
+  dt {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+    padding-top: 3px;
+  }
+
+  .links {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border-dashed);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 20px;
+    font-weight: 600;
+  }
+  /* 44px hit area without enlarging the text (§7) */
+  .links a,
+  .plain {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .plain { color: var(--muted); }
+</style>

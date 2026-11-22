@@ -1,0 +1,39 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page not found — Rajdeep Singh Gaur" anchorBase="/">
+  <section class="container notfound">
+    <h1>404 / Ticket closed</h1>
+    <p class="body">Page not found. This page doesn't exist or has moved.</p>
+    <div class="links">
+      <a href="/">Go to the homepage</a>
+      <a href="/#projects">See projects</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .notfound { padding-block: 88px 120px; }
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(34px, 4vw, 52px);
+    line-height: 1.05;
+  }
+  .body { margin-top: 16px; max-width: 600px; color: var(--body-2); }
+  .links {
+    margin-top: 32px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border-dashed);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 20px;
+    font-weight: 600;
+  }
+  .links a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+</style>

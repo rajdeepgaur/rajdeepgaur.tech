@@ -1,0 +1,103 @@
+---
+interface Props {
+  dates: string;
+  title: string;
+  org: string;
+  stat?: { value: string; label: string };
+  bullets: string[];
+  chips: string[];
+}
+
+const { dates, title, org, stat, bullets, chips } = Astro.props;
+---
+
+<li class="role">
+  <div class="meta">
+    <p class="mono">{dates}</p>
+    <h3>{title}</h3>
+    <p class="mono org">{org}</p>
+    {
+      stat && (
+        <>
+          <p class="stat">{stat.value}</p>
+          <p class="stat-label">{stat.label}</p>
+        </>
+      )
+    }
+  </div>
+  <div class="detail">
+    <ul class="bullets" role="list">
+      {
+        bullets.map((b) => (
+          <li>
+            <span class="square" aria-hidden="true" />
+            <span>{b}</span>
+          </li>
+        ))
+      }
+    </ul>
+    <ul class="chips" role="list">
+      {chips.map((c) => <li>{c}</li>)}
+    </ul>
+  </div>
+</li>
+
+<style>
+  .role {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 48px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .meta { flex: 1 1 260px; }
+  .mono {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .org { margin-top: 4px; }
+  h3 {
+    margin-top: 8px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 1.1;
+  }
+  .stat {
+    margin-top: 20px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 1;
+  }
+  .stat-label {
+    margin-top: 4px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .detail {
+    flex: 999 1 560px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .bullets {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 75ch;
+  }
+  .bullets li { display: flex; gap: 12px; }
+  .square {
+    flex: 0 0 auto;
+    width: 7px;
+    height: 7px;
+    background: var(--accent);
+    margin-top: 10px;
+  }
+</style>

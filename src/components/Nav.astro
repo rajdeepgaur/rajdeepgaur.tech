@@ -1,0 +1,136 @@
+---
+interface Props {
+  /** '' on the homepage, '/' on other pages so anchors point back to the homepage. */
+  anchorBase?: string;
+}
+
+const { anchorBase = '' } = Astro.props;
+const links = [
+  { label: 'Method', href: `${anchorBase}#method` },
+  { label: 'Projects', href: `${anchorBase}#projects` },
+  { label: 'Experience', href: `${anchorBase}#experience` },
+];
+// Contact is the button-styled last item (§6, D4).
+const contact = { label: 'Contact', href: `${anchorBase}#contact` };
+const home = anchorBase ? '/' : '#top';
+---
+
+<header id="top" class="site-header">
+  <nav aria-label="Primary" class="container nav">
+    <a class="wordmark" href={home}>rajdeepgaur<span>.tech</span></a>
+
+    <ul class="links only-desktop" role="list">
+      {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+      <li><a class="cta" href={contact.href}>{contact.label}</a></li>
+    </ul>
+
+    <details class="menu only-mobile">
+      <summary aria-label="Menu">
+        <svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path></svg>
+      </summary>
+      <ul class="panel" role="list">
+        {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        <li><a class="cta" href={contact.href}>{contact.label}</a></li>
+      </ul>
+    </details>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    position: relative;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Mobile (canvas: Mobile.dc.html header) */
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-block: 8px;
+  }
+
+  .wordmark {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .wordmark span { color: var(--accent); }
+
+  .menu summary {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--ink);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink);
+    cursor: pointer;
+    list-style: none;
+  }
+  .menu summary::-webkit-details-marker { display: none; }
+  .menu summary::marker { content: ''; }
+
+  .panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    margin: 0;
+    padding: 8px var(--gutter) 20px;
+    background: var(--page);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 14px;
+  }
+  .panel li + li { border-top: 1px solid var(--border-soft); }
+  .panel a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    text-decoration: none;
+  }
+  .panel .cta { margin-top: 12px; justify-content: center; }
+
+  .cta {
+    background: var(--ink);
+    color: var(--card);
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .cta:hover { color: var(--card); }
+
+  /* Desktop (canvas: Main.dc.html nav) */
+  @media (min-width: 640px) {
+    .nav { padding-block: 18px; }
+    .wordmark { font-size: 15px; letter-spacing: 0.02em; }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 28px;
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: 14px;
+    }
+    .links a:not(.cta) {
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+    }
+  }
+</style>

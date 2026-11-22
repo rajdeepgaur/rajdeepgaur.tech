@@ -1,0 +1,122 @@
+---
+// Each entry: value, main label and sub-label. Where Mobile.dc.html uses shorter copy than Main.dc.html,
+// both strings are in the markup and CSS shows one per breakpoint (D3).
+const entries = [
+  {
+    value: '1,500+',
+    label: { mobile: 'tickets resolved', desktop: 'support tickets resolved' },
+    sub: { mobile: 'BlogVault', desktop: 'BlogVault · 4 products' },
+  },
+  {
+    value: '100+',
+    label: { mobile: 'WordPress sites built', desktop: 'WordPress sites built' },
+    sub: { mobile: 'Incsub', desktop: 'Incsub · FSE, Multisite' },
+  },
+  {
+    value: '4 live',
+    label: { mobile: 'projects shipped', desktop: 'projects shipped' },
+    sub: { mobile: 'incl. WordPress.org plugin', desktop: 'incl. a plugin on WordPress.org' },
+  },
+];
+---
+
+<aside aria-label="Evidence" class="ledger">
+  <div class="head"><span>Evidence</span><span class="count">3 entries</span></div>
+  <dl>
+    {
+      entries.map((e) => (
+        <div class="entry">
+          <dt>{e.value}</dt>
+          <dd>
+            {e.label.mobile === e.label.desktop ? (
+              <span class="label">{e.label.desktop}</span>
+            ) : (
+              <>
+                <span class="label only-mobile">{e.label.mobile}</span>
+                <span class="label only-desktop">{e.label.desktop}</span>
+              </>
+            )}
+            <br />
+            <span class="sub only-mobile">{e.sub.mobile}</span>
+            <span class="sub only-desktop">{e.sub.desktop}</span>
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+</aside>
+
+<style>
+  .ledger {
+    min-width: 0;
+    background: var(--card);
+    border: 1px solid var(--ink);
+    box-shadow: var(--shadow-hard);
+  }
+
+  .head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--ink);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .count { color: var(--muted); }
+
+  /* Mobile: 2-column grid, last entry spans both columns (Mobile.dc.html) */
+  dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .entry { padding: 14px; }
+  .entry:nth-child(1) { border-right: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft); }
+  .entry:nth-child(2) { border-bottom: 1px solid var(--border-soft); }
+  .entry:last-child { grid-column: 1 / -1; }
+
+  dt {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 1;
+  }
+  dd {
+    margin-top: 4px;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+  .sub {
+    font-family: var(--font-mono);
+    font-size: 13px; /* canvas 11px, raised per §5.3 */
+    color: var(--muted);
+  }
+
+  /* Desktop: stacked rows with a 128px value column (Main.dc.html) */
+  @media (min-width: 640px) {
+    .head { padding: 12px 18px; }
+
+    dl { display: block; }
+    .entry,
+    .entry:nth-child(1),
+    .entry:nth-child(2) {
+      display: grid;
+      grid-template-columns: 128px minmax(0, 1fr);
+      gap: 16px;
+      padding: 18px;
+      border-right: 0;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .entry:last-child { border-bottom: 0; }
+
+    dt { font-size: 40px; }
+    dd {
+      margin-top: 0;
+      font-size: 17px;
+      line-height: 1.55;
+    }
+    .label { font-weight: 600; }
+  }
+</style>

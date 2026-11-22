@@ -1,0 +1,20 @@
+---
+interface Props {
+  /** accent: light sections · on-dark: Method · inherit: Contact band (white) */
+  tone?: 'accent' | 'on-dark' | 'inherit';
+}
+const { tone = 'accent' } = Astro.props;
+---
+
+<p class:list={['label', tone]}><slot /></p>
+
+<style>
+  .label {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+  }
+  .accent { color: var(--accent); }
+  .on-dark { color: var(--accent-on-dark); }
+  .inherit { color: inherit; }
+</style>

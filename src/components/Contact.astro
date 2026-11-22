@@ -1,0 +1,87 @@
+---
+import SectionLabel from './SectionLabel.astro';
+import { site } from '../site';
+
+const rows = [
+  { name: 'Email', value: site.email, href: `mailto:${site.email}`, wrap: true },
+  // External links open in a new tab (§7). mailto stays in the same tab.
+  { name: 'LinkedIn', value: 'Rajdeep Singh Gaur', href: site.linkedin, external: true },
+  { name: 'GitHub', value: 'github.com/rajdeepgaur', href: site.github, external: true },
+];
+---
+
+<section id="contact" class="contact">
+  <div class="container inner">
+    <div class="lead">
+      <SectionLabel tone="inherit">06 / CONTACT</SectionLabel>
+      <h2>Open a ticket with me.</h2>
+      <p class="reply">Hiring? I reply within 24 hours.</p>
+    </div>
+    <ul class="rows" role="list">
+      {
+        rows.map((r) => (
+          <li>
+            <a href={r.href} target={r.external ? '_blank' : undefined} rel={r.external ? 'noopener' : undefined}>
+              <span>{r.name}</span>
+              <span class:list={['value', { wrap: r.wrap }]}>
+                {r.value}{' '}<span aria-hidden="true">↗</span>{r.external && <span class="visually-hidden">(opens in new tab)</span>}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .contact {
+    margin-top: 72px;
+    background: var(--accent);
+    color: #FFFFFF;
+  }
+  .contact :global(:focus-visible) { outline-color: #FFFFFF; }
+
+  .inner {
+    padding-block: 80px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .lead { flex: 999 1 520px; min-width: 0; }
+  h2 {
+    margin-top: 10px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(38px, 5vw, 64px);
+    line-height: 1;
+  }
+  .reply { margin-top: 16px; max-width: 520px; font-size: 18px; }
+
+  .rows {
+    flex: 1 1 340px;
+    min-width: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-mono);
+    font-size: 16px;
+  }
+  .rows li { border-top: 1px solid rgba(255, 255, 255, 0.5); }
+  /* Last row (GitHub) takes the bottom border (§6) */
+  .rows li:last-child { border-bottom: 1px solid rgba(255, 255, 255, 0.5); }
+  .rows a {
+    color: #FFFFFF;
+    text-decoration: none;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 0;
+    min-height: 44px;
+  }
+  .rows a:hover { color: #FFFFFF; }
+  .value { min-width: 0; text-align: right; }
+  .wrap { overflow-wrap: anywhere; }
+</style>

@@ -1,0 +1,9 @@
+build-spec.md
+banned-terms.txt
+# build output and deps
+dist/
+.astro/
+node_modules/
+.env
+.env.*
+.DS_Store
