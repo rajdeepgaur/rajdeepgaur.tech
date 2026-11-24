@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 
 interface Props {
@@ -8,24 +8,34 @@ interface Props {
   caption: string;
   /** Box background behind the screenshot. */
   bg?: string;
+  /** First figure straight after the intro: 32px top margin instead of 24px. */
+  lead?: boolean;
 }
 
-const { src, alt, caption, bg = '#FFFFFF' } = Astro.props;
+const { src, alt, caption, bg = '#FFFFFF', lead = false } = Astro.props;
 // Same image handling as the cards (§8): one full-size lossless WebP, lazy. No fixed-height box here:
-// full column width, height: auto.
+// full column width, height: auto. The image links to that same WebP file (§4.2.4), same tab.
+const img = await getImage({ src, format: 'webp', width: src.width, height: src.height });
 ---
 
-<figure class="case-figure">
+<figure class:list={['case-figure', { lead }]}>
   <div class="frame" style={`background: ${bg}`}>
-    <Image src={src} alt={alt} format="webp" width={src.width} height={src.height} loading="lazy" decoding="async" />
+    <a href={img.src} aria-label={`Open full-size image: ${alt}`}>
+      <img src={img.src} alt={alt} width={src.width} height={src.height} loading="lazy" decoding="async" />
+    </a>
   </div>
   <figcaption>{caption}</figcaption>
 </figure>
 
 <style>
   .case-figure { margin-top: 24px; }
+  .case-figure.lead { margin-top: 32px; }
   .frame { border: 1px solid var(--ink); }
-  .frame :global(img) {
+  a {
+    display: block;
+    cursor: zoom-in;
+  }
+  img {
     display: block;
     width: 100%;
     height: auto;

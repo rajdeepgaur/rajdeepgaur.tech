@@ -17,7 +17,7 @@ const pageUrl = data.page ? `/projects/${id}/` : undefined;
     <span>{data.caseLabel}</span>
     <span class="status"><span class="dot" aria-hidden="true"></span>{data.status}</span>
   </div>
-  <ProjectImage src={data.image.src} alt={data.image.alt} bg={data.image.bg} fit={data.image.fit} fitMobile={data.image.fitMobile} />
+  <ProjectImage src={data.image.src} alt={data.image.alt} bg={data.image.bg} fit={data.image.fit} fitMobile={data.image.fitMobile} position={data.image.position} positionMobile={data.image.positionMobile} />
   <div class="body">
     <h3>{pageUrl ? <a class="title-link" href={pageUrl}>{data.title}</a> : data.title}</h3>
     <dl>

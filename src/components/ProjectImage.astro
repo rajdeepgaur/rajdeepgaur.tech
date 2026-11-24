@@ -9,17 +9,32 @@ interface Props {
   fit: 'contain' | 'cover';
   /** Below 640px only; unset = same as fit (§6, §8). */
   fitMobile?: 'contain' | 'cover';
+  /** CSS object-position; unset = centre. */
+  position?: string;
+  /** Below 640px only; unset = same as position. */
+  positionMobile?: string;
 }
 
-const { src, alt, bg, fit, fitMobile } = Astro.props;
+const { src, alt, bg, fit, fitMobile, position, positionMobile } = Astro.props;
 // Decided 22 Nov: one full-size lossless WebP per screenshot, pixel-identical to the original PNG
 // (lossless/exact options are in astro.config.mjs). Full size keeps UI text sharp when zoomed in.
 // Built-in loading="lazy" only; trade-offs (full-size download on phones) accepted.
 // Earlier tries: AVIF/WebP at quality 90 and 100 (blurred when zoomed, capped at 1200w),
 // the raw PNGs (sharp but ~987 KB), lossless AVIF (heavier than the PNGs).
+//
+// Fit and position come from the data as custom properties; the mobile ones fall back to the
+// desktop ones below 640px. Alpha: cover + top. Block Rewind: cover + top, right top on phones.
+// 1% Better: contain, cover (centred) on phones.
+const vars = [
+  `background: ${bg}`,
+  `--fit: ${fit}`,
+  position && `--pos: ${position}`,
+  fitMobile && `--fit-m: ${fitMobile}`,
+  positionMobile && `--pos-m: ${positionMobile}`,
+].filter(Boolean).join('; ');
 ---
 
-<div class:list={['box', fit, fitMobile && `mobile-${fitMobile}`]} style={`background: ${bg}`}>
+<div class="box" style={vars}>
   <Image
     src={src}
     alt={alt}
@@ -41,22 +56,13 @@ const { src, alt, bg, fit, fitMobile } = Astro.props;
   .box :global(img) {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: var(--fit, contain);
+    object-position: var(--pos, center);
   }
-  /* Alpha: cover, anchored to the top (§6) */
-  .cover :global(img) {
-    object-fit: cover;
-    object-position: top;
-  }
-  /* fitMobile replaces fit below 640px, centred (1% Better: cover on phones, contain from 640px) */
   @media (max-width: 639.98px) {
-    .mobile-cover :global(img) {
-      object-fit: cover;
-      object-position: center;
-    }
-    .mobile-contain :global(img) {
-      object-fit: contain;
-      object-position: center;
+    .box :global(img) {
+      object-fit: var(--fit-m, var(--fit, contain));
+      object-position: var(--pos-m, var(--pos, center));
     }
   }
 </style>
