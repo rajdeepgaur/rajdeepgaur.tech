@@ -1,0 +1,39 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  caption: string;
+  /** Box background behind the screenshot. */
+  bg?: string;
+}
+
+const { src, alt, caption, bg = '#FFFFFF' } = Astro.props;
+// Same image handling as the cards (§8): one full-size lossless WebP, lazy. No fixed-height box here:
+// full column width, height: auto.
+---
+
+<figure class="case-figure">
+  <div class="frame" style={`background: ${bg}`}>
+    <Image src={src} alt={alt} format="webp" width={src.width} height={src.height} loading="lazy" decoding="async" />
+  </div>
+  <figcaption>{caption}</figcaption>
+</figure>
+
+<style>
+  .case-figure { margin-top: 24px; }
+  .frame { border: 1px solid var(--ink); }
+  .frame :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  figcaption {
+    margin-top: 12px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+  }
+</style>

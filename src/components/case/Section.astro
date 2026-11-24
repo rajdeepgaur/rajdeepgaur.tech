@@ -1,0 +1,39 @@
+---
+interface Props {
+  /** "ARCHITECTURE", "01"…"05"; omitted for "Trade-offs" (§4.2.4). */
+  label?: string;
+  title: string;
+}
+
+const { label, title } = Astro.props;
+---
+
+<section class="case-section">
+  <div class="case-section-head">
+    {label && <p class="label">{label}</p>}
+    <h3>{title}</h3>
+  </div>
+  <slot />
+</section>
+
+<style>
+  .case-section { margin-top: 56px; }
+  .case-section-head {
+    border-top: 2px solid var(--ink);
+    padding-top: 20px;
+  }
+  .label {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+  }
+  h3 {
+    margin-top: 8px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 34px;
+    line-height: 1.1;
+  }
+</style>

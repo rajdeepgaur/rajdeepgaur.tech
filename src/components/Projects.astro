@@ -1,0 +1,53 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import SectionLabel from './SectionLabel.astro';
+import ProjectCard from './ProjectCard.astro';
+
+interface Props {
+  /** The projects collection, already sorted by `order` (index.astro loads it, §4.1). */
+  projects: CollectionEntry<'projects'>[];
+}
+
+const { projects } = Astro.props;
+// Header: one row as on the canvas (§6): label + h2 on the left, intro on the right, bottoms
+// aligned; the intro wraps under the heading by itself when the row is too narrow.
+---
+
+<section id="projects" class="container projects">
+  <div class="head">
+    <div>
+      <SectionLabel>02 / PROJECTS</SectionLabel>
+      <h2 class="section-title">Problems I chose to solve in code.</h2>
+    </div>
+    <p class="intro">Full-stack apps, an AI agent and a WordPress plugin. Each one is live or public. Open them.</p>
+  </div>
+  <div class="grid">
+    {projects.map((p) => <ProjectCard project={p} />)}
+  </div>
+</section>
+
+<style>
+  .projects { padding-block: 88px 40px; }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px 40px;
+  }
+  .intro {
+    margin: 0;
+    max-width: 420px;
+    color: var(--body-2);
+  }
+  .grid {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  /* 2-up from 960px (§5.4) */
+  @media (min-width: 960px) {
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>

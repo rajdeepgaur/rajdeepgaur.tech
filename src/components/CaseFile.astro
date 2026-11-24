@@ -1,0 +1,110 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { data } = Astro.props.project;
+// Case number as on the artboard: two digits from the card order ("02").
+const caseNumber = String(data.order).padStart(2, '0');
+---
+
+<aside aria-label="Case file" class="case-file">
+  <div class="head"><span>Case file</span><span class="num">{caseNumber}</span></div>
+  <dl>
+    <div class="row">
+      <dt>STATUS</dt>
+      <dd class="status"><span class="dot" aria-hidden="true"></span>{data.statusDetail}</dd>
+    </div>
+    <div class="row">
+      <dt>STACK</dt>
+      <dd class="stack">
+        <ul class="chips" role="list">
+          {data.tags.map((t) => <li>{t}</li>)}
+        </ul>
+      </dd>
+    </div>
+    <div class="row">
+      <dt>LINKS</dt>
+      <dd class="links">
+        {
+          data.links.map((l) =>
+            l.href ? (
+              <a href={l.href} target="_blank" rel="noopener">{l.label}{' '}<span aria-hidden="true">↗</span><span class="visually-hidden">(opens in new tab)</span></a>
+            ) : (
+              <span class="plain">{l.label}</span>
+            )
+          )
+        }
+      </dd>
+    </div>
+  </dl>
+</aside>
+
+<style>
+  .case-file {
+    flex: 1 1 340px;
+    min-width: 0;
+    background: var(--card);
+    border: 1px solid var(--ink);
+    box-shadow: var(--shadow-hard);
+  }
+
+  .head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--ink);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .num { color: var(--muted); }
+
+  .row { padding: 16px 18px; }
+  .row + .row { border-top: 1px solid var(--border-soft); }
+
+  dt {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* Dot top-aligned to the first line when the status wraps (§4.2.2) */
+  .status {
+    margin-top: 4px;
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-weight: 600;
+    color: var(--live);
+  }
+  .dot {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    margin-top: calc((1lh - 8px) / 2);
+    border-radius: 50%;
+    background: var(--live);
+  }
+
+  .stack { margin-top: 8px; }
+
+  .links {
+    margin-top: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 20px;
+    font-weight: 600;
+  }
+  .links a,
+  .plain {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .plain { color: var(--muted); }
+</style>

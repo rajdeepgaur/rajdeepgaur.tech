@@ -1,0 +1,15 @@
+---
+// Used for every Markdown link in a write-up body (MDX `components={{ a: BodyLink }}`).
+// External web links follow §7: new tab, rel="noopener", and the screen-reader-only
+// "(opens in new tab)" text. Body links carry no ↗ glyph. Internal links stay as they are.
+const { href = '', ...rest } = Astro.props;
+const external = /^https?:\/\//.test(href);
+---
+
+{
+  external ? (
+    <a href={href} target="_blank" rel="noopener" {...rest}><slot /><span class="visually-hidden"> (opens in new tab)</span></a>
+  ) : (
+    <a href={href} {...rest}><slot /></a>
+  )
+}

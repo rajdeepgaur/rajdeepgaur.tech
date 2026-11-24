@@ -1,0 +1,49 @@
+---
+interface Props {
+  name: string;
+  sub?: string;
+  /** Accent box: #FBEDE6 fill, 2px accent border. */
+  highlight?: boolean;
+  class?: string;
+}
+
+const { name, sub, highlight = false, class: className } = Astro.props;
+// The default slot adds lines under the sub-label (e.g. Expiry cleanup folded into IndexedDB).
+---
+
+<div class:list={['box', { highlight }, className]}>
+  <span class="name">{name}</span>
+  {sub && <span class="sub">{sub}</span>}
+  <slot />
+</div>
+
+<style>
+  .box {
+    background: var(--card);
+    border: 1px solid var(--ink);
+    padding: 10px 12px;
+    text-align: center;
+    min-height: 64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    overflow-wrap: normal;
+  }
+  .highlight {
+    background: #FBEDE6;
+    border: 2px solid var(--accent);
+  }
+  .name {
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 1.25;
+  }
+  .sub {
+    margin-top: 2px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+</style>

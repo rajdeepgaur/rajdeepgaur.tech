@@ -1,0 +1,18 @@
+---
+import { getCollection, render } from 'astro:content';
+import ProjectPage from '../../layouts/ProjectPage.astro';
+import BodyLink from '../../components/case/BodyLink.astro';
+
+// §4.2.1: only entries with page: true get a page, at /projects/<id>/.
+export async function getStaticPaths() {
+  const projects = await getCollection('projects', (p) => p.data.page);
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+
+<ProjectPage project={project}>
+  <Content components={{ a: BodyLink }} />
+</ProjectPage>

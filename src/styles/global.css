@@ -56,8 +56,10 @@ a:hover { color: var(--accent); }
 }
 
 /* Utilities */
+/* Content is --max (1240px) wide plus the gutters, as on the canvas, whose sections are
+   max-width 1240px with padding outside it. border-box stays, so every section's left edge lines up. */
 .container {
-  max-width: var(--max);
+  max-width: calc(var(--max) + 2 * var(--gutter));
   margin-inline: auto;
   padding-inline: var(--gutter);
 }

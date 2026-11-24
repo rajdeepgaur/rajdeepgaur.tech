@@ -1,18 +1,24 @@
 ---
 interface Props {
-  /** '' on the homepage, '/' on other pages so anchors point back to the homepage. */
-  anchorBase?: string;
+  /**
+   * home: in-page anchors, wordmark → #top.
+   * project (§4.2.3): section links point back to the homepage, Projects is current,
+   *   Contact goes to the page's own Contact band.
+   * other (404): section links and Contact point back to the homepage.
+   */
+  mode?: 'home' | 'project' | 'other';
 }
 
-const { anchorBase = '' } = Astro.props;
+const { mode = 'home' } = Astro.props;
+const base = mode === 'home' ? '' : '/';
 const links = [
-  { label: 'Method', href: `${anchorBase}#method` },
-  { label: 'Projects', href: `${anchorBase}#projects` },
-  { label: 'Experience', href: `${anchorBase}#experience` },
+  { label: 'Method', href: `${base}#method` },
+  { label: 'Projects', href: `${base}#projects`, current: mode === 'project' },
+  { label: 'Experience', href: `${base}#experience` },
 ];
 // Contact is the button-styled last item (§6, D4).
-const contact = { label: 'Contact', href: `${anchorBase}#contact` };
-const home = anchorBase ? '/' : '#top';
+const contact = { label: 'Contact', href: mode === 'other' ? '/#contact' : '#contact' };
+const home = mode === 'home' ? '#top' : '/';
 ---
 
 <header id="top" class="site-header">
@@ -20,7 +26,7 @@ const home = anchorBase ? '/' : '#top';
     <a class="wordmark" href={home}>rajdeepgaur<span>.tech</span></a>
 
     <ul class="links only-desktop" role="list">
-      {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+      {links.map((l) => <li><a href={l.href} aria-current={l.current ? 'true' : undefined}>{l.label}</a></li>)}
       <li><a class="cta" href={contact.href}>{contact.label}</a></li>
     </ul>
 
@@ -29,7 +35,7 @@ const home = anchorBase ? '/' : '#top';
         <svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path></svg>
       </summary>
       <ul class="panel" role="list">
-        {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        {links.map((l) => <li><a href={l.href} aria-current={l.current ? 'true' : undefined}>{l.label}</a></li>)}
         <li><a class="cta" href={contact.href}>{contact.label}</a></li>
       </ul>
     </details>
@@ -111,6 +117,9 @@ const home = anchorBase ? '/' : '#top';
     align-items: center;
   }
   .cta:hover { color: var(--card); }
+
+  /* Project pages: Projects in accent (Project-page.dc.html) */
+  [aria-current='true'] { color: var(--accent); }
 
   /* Desktop (canvas: Main.dc.html nav) */
   @media (min-width: 640px) {

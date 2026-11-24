@@ -1,0 +1,40 @@
+---
+interface Props {
+  /** The diagram's description, read once by screen readers (role="img"). */
+  label: string;
+  caption?: string;
+  /** Width in px from which the wide version shows; the small version shows below it. */
+  breakpoint?: number;
+}
+
+const { label, caption, breakpoint = 820 } = Astro.props;
+// One version is hidden with display: none at each width, so screen readers get one description.
+// The breakpoint is a prop, and a media query can't read a CSS variable, so the switch is a small
+// inline <style> keyed to a class per breakpoint (CSP allows inline styles, §10.2).
+const bp = `diagram-bp-${breakpoint}`;
+const css = `.${bp} > .diagram-small{display:none}@media (max-width:${breakpoint - 0.02}px){.${bp} > .diagram-wide{display:none}.${bp} > .diagram-small{display:block}}`;
+---
+
+<style is:inline set:html={css}></style>
+<figure class="diagram">
+  <div role="img" aria-label={label} class:list={['frame', bp]}>
+    <div class="diagram-wide"><slot name="wide" /></div>
+    <div class="diagram-small"><slot name="small" /></div>
+  </div>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .diagram { margin-top: 24px; }
+  .frame {
+    border: 1px solid var(--ink);
+    background: var(--page);
+    padding: 16px;
+  }
+  figcaption {
+    margin-top: 12px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+  }
+</style>

@@ -1,0 +1,131 @@
+---
+order: 2
+title: Block Rewind
+caseLabel: CASE 02 · WORDPRESS PLUGIN
+status: LIVE ON WP.ORG
+problem: "WordPress revisions save the whole post, only on save, and undo works on the whole post. You can't bring back one paragraph without losing later changes."
+built: "A short version history for every block. Compare before restoring (word-by-word changes and every setting that would change), undo any restore, and keep history private in the browser."
+tags: [JavaScript, React, PHP, Gutenberg, IndexedDB, Open source]
+image:
+  src: ../../assets/projects/block-rewind-compare.png
+  alt: "Block Rewind compare view: what restoring an earlier version of a paragraph will change, with the current and restored text side by side"
+  bg: "#FFFFFF"
+  fit: contain
+links:
+  - { label: WordPress.org, href: "https://wordpress.org/plugins/block-rewind/" }
+  - { label: GitHub repo, href: "https://github.com/rajdeepgaur/block-rewind" }
+page: true
+statusDetail: "Live on WordPress.org · passed plugin review"
+caseStudyTitle: "Building Block Rewind: Per-Block Version History for Gutenberg"
+description: "How I built per-block version history for Gutenberg: stable block IDs, paced saves, safe restores and a readable compare view, all in the browser."
+---
+import Section from '../../components/case/Section.astro';
+import BlockRewindArchitecture from '../../components/case/diagrams/BlockRewindArchitecture.astro';
+import Figure from '../../components/case/Figure.astro';
+import TradeoffsTable from '../../components/case/TradeoffsTable.astro';
+import Tested from '../../components/case/Tested.astro';
+import compare from '../../assets/projects/block-rewind-compare.png';
+
+A per-block history sounds simple, but Gutenberg gives you none of the pieces for it: its block IDs change every time the editor loads, and its data changes on every keystroke. Browser storage adds its own problems: it can be slow, full, or cut off when the page closes.
+
+This write-up covers how Block Rewind works around that: the architecture first, then the five ideas it's built on, and the trade-offs I made along the way.
+
+<Section label="ARCHITECTURE" title="Architecture at a glance">
+
+<BlockRewindArchitecture />
+
+Everything runs inside the editor, in your browser. Block Rewind watches the editor for changes, works out which block changed and whether it really did, and saves a version every so often. The sidebar then reads those versions back so you can compare and restore. The PHP side is tiny: it registers the name-tag attribute, loads the script and passes in a few settings.
+
+</Section>
+
+<Section label="01" title="Every block needs a name tag">
+
+To keep a block's history, you have to recognize the same block later. Gutenberg gives each block an internal ID, but it changes every time the editor loads. Any history tied to it would be lost on the first reload.
+
+So Block Rewind gives each block its own small ID, saved inside the block itself. It's added the first time you edit a block, not when you just click on it, so opening a post never changes it.
+
+Storing the ID in the block brings one catch: **copies carry it too.** Duplicate a block or paste it, and two blocks now claim the same history. The rule is simple: the block that had the ID first keeps it, and the copy starts a fresh history.
+
+One more case: if you reload without saving, the new IDs are lost with your unsaved changes, but the history is still in the browser. Block Rewind reconnects a block to its history by matching its content, and only when there's exactly one match. If it isn't sure, it leaves the block alone rather than attach the wrong history.
+
+</Section>
+
+<Section label="02" title="Save what changed, not every keystroke">
+
+The editor reports a change on every keystroke, click and selection. Saving a version each time would bury the useful versions under hundreds of near-identical ones, and slow down typing.
+
+So saving a version and noticing a change are kept apart:
+
+- **Saving is paced.** Each block is saved at most once a minute, timed from its own last version, so one block's edits never rush or delay another's. A timer checks every 5 seconds for blocks that are due, which also saves your last edits after you stop typing.
+- **Noticing is cheap.** Whenever the editor changes, a quick check runs, at most five times a second. When you're not editing, almost nothing runs. Gutenberg's data is never changed in place, so an untouched block is the exact same object as before. Only blocks that look different get a closer comparison of their content.
+- **The "before" version is always kept.** The first time you edit a block, its state from just before that edit is saved too, unless the block was empty, like one you just inserted. It's often the version people want back.
+
+If nothing really changed, nothing is saved, so the history stays short and readable.
+
+</Section>
+
+<Section label="03" title="A restore must never lose work">
+
+A history tool that loses your work is worse than none. Four moments needed care.
+
+**Before you restore.** The compare view shows the old version next to the current one, so you can see exactly what a restore will do before you click (more in section 4).
+
+**When you restore.** The block's current state is saved to its history first, so nothing is overwritten for good. The restore is a single undo step, so one Ctrl+Z puts everything back. Restoring a Group or Columns block keeps the blocks inside it linked to their own histories.
+
+**Typing while a save is running.** JavaScript does one thing at a time, but saving to the browser's database takes a moment, and you can keep typing meanwhile. Each save is set up so those keystrokes are caught and saved next, not silently dropped.
+
+**When you close or reload the page.** Browsers often cut off work that's still running when a page closes. Block Rewind writes all unsaved edits in one quick step as the page starts to close, which is the moment browsers reliably let a save finish.
+
+</Section>
+
+<Section label="04" title="Show a change the way people read it">
+
+The compare view is where you decide whether to restore. A raw diff of block data is no help there: a typo fix shows up as a whole paragraph of markup, and a color change as a line of JSON. Block Rewind describes a change in the terms you would use yourself.
+
+<Figure src={compare} alt="Block Rewind compare view: what restoring an earlier version of a paragraph will change, with the current and restored text side by side" caption='The compare view: a "Restoring will change" table above the old and current text.' bg="#FFFFFF" />
+
+- **Text is compared word by word.** Removed words are struck through and added words are highlighted.
+- **Small edits stay small.** When a word is swapped for a similar one, only the letters that differ are marked. Fixing "recieve" marks just the "ie" that became "ei," instead of striking the word and adding it back. The count says "1 word changed," not "1 removed, 1 added."
+- **Unchanged text steps aside.** Long stretches that didn't change shrink to a few words of context around each change. A button such as "42 unchanged words" opens the full text.
+- **Settings are listed separately.** Color, font size, alignment and other settings appear in a "Restoring will change" table, by name, with their value now and after restoring. Colors come with a small swatch. A change that only adds bold or a link is called a formatting change, not a text change.
+- **Blocks inside are reported on their own.** For a Group or Columns block, each inner block that changes is listed by position, for example "Paragraph 2 of 3," or as "Removed if you restore." An edit inside a Group is never counted as the Group's own text.
+
+Two safeguards keep the view honest. Very long texts that would take too long to compare are shown as old text out and new text in, rather than freezing the editor. A version that uses a block type which is no longer installed can still be viewed, but its Restore button is turned off, with the reason given.
+
+</Section>
+
+<Section label="05" title="History lives in your browser">
+
+Versions are stored in IndexedDB, a small database built into every modern browser. Nothing is sent to your server or anywhere else, and there are no cookies or tracking.
+
+IndexedDB turned out to be a great fit:
+
+- **Fast lookups.** Versions are filed by post, then block, then time, so loading one block's history never touches the rest.
+- **Separate per site and per user.** Two sites, or two people sharing a browser, never see each other's history.
+- **Self-cleaning.** Versions expire after 4 hours, with at most 100 per block. Old ones are cleared in small batches in the background, so editing never pauses. Site owners can change both limits with a filter.
+- **Honest about failure.** If the browser's storage is full or blocked, as in some private windows, the sidebar says so plainly. Your post itself is never affected.
+
+</Section>
+
+<Section title="Trade-offs">
+
+Every design decision has a cost, and the plugin is upfront about them:
+
+<TradeoffsTable rows={[
+  { decision: 'History in the browser (IndexedDB)', benefit: 'No server load, no data leaves the device, no privacy questions', cost: 'Not shared across devices, browsers or users' },
+  { decision: '4-hour retention, 100 versions per block', benefit: 'Storage stays small; cleanup stays fast', cost: "Not a long-term archive (that's what revisions are for)" },
+  { decision: 'ID stored in post content', benefit: 'Survives saves and reloads', cost: 'Copied blocks have to be sorted out; adds one small attribute to edited blocks' },
+  { decision: 'About one version per minute', benefit: 'A readable timeline', cost: 'Changes made within one minute merge into a single version' },
+]} />
+
+Block Rewind works in the post editor, for posts, pages and custom post types. The Site Editor, templates, template parts and synced patterns aren't supported yet. Tracking pauses while you edit them from a post, so history IDs are never written into content other posts share.
+
+Deactivating the plugin is safe. WordPress ignores the unknown attribute, and it's removed the next time the post is saved.
+
+<Tested>The behavior above is covered by **74 unit tests** and **43 end-to-end tests** that drive a real editor, including duplicating blocks, reloading without saving, restoring and running out of storage.</Tested>
+
+</Section>
+
+---
+
+Block Rewind is free on [WordPress.org](https://wordpress.org/plugins/block-rewind/) and open source on [GitHub](https://github.com/rajdeepgaur/block-rewind). If you try it, I'd love to hear what breaks.

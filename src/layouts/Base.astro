@@ -9,13 +9,15 @@ import sans400 from '@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-nor
 interface Props {
   title?: string;
   description?: string;
-  /** Prefix for in-page nav anchors: '' on the homepage, '/' elsewhere. */
-  anchorBase?: string;
+  /** Nav mode (§4.2.3): 'home', 'project' or 'other' (404). */
+  navMode?: 'home' | 'project' | 'other';
   /** Canonical URL. When set, the page also gets Open Graph, Twitter and JSON-LD tags. */
   canonical?: string;
+  /** og:type: 'website' (homepage) or 'article' (project pages, §9.4). */
+  ogType?: 'website' | 'article';
 }
 
-const { title = site.seo.title, description, anchorBase = '', canonical } = Astro.props;
+const { title = site.seo.title, description, navMode = 'home', canonical, ogType = 'website' } = Astro.props;
 const ogImage = new URL('/og.png', site.url).href;
 const ogImageAlt =
   'Rajdeep Singh Gaur — A support engineer who builds. 1,500+ support tickets resolved, 100+ WordPress sites built, 4 live projects.';
@@ -46,7 +48,7 @@ const beaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
       canonical && (
         <>
           <link rel="canonical" href={canonical} />
-          <meta property="og:type" content="website" />
+          <meta property="og:type" content={ogType} />
           <meta property="og:url" content={canonical} />
           <meta property="og:title" content={title} />
           {description && <meta property="og:description" content={description} />}
@@ -75,7 +77,7 @@ const beaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <Nav anchorBase={anchorBase} />
+    <Nav mode={navMode} />
     <main id="main">
       <slot />
     </main>

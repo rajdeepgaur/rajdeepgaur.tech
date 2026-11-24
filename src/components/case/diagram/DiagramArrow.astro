@@ -1,0 +1,48 @@
+---
+interface Props {
+  dir: 'right' | 'left' | 'up' | 'down';
+  /** Where the arrow (and its label) sit in the cell. */
+  align?: 'start' | 'center' | 'end';
+  /** Put the label before the arrow instead of after it. */
+  labelFirst?: boolean;
+  class?: string;
+}
+
+const { dir, align = 'center', labelFirst = false, class: className } = Astro.props;
+const paths = {
+  right: ['M2 12h18', 'm14 6 6 6-6 6'],
+  left: ['M22 12H4', 'm10 6-6 6 6 6'],
+  up: ['M12 22V4', 'm6 10 6-6 6 6'],
+  down: ['M12 2v18', 'm6 14 6 6 6-6'],
+}[dir];
+const hasLabel = Astro.slots.has('default');
+// Always aria-hidden: the diagram is described once by its role="img" label.
+---
+
+<div aria-hidden="true" class:list={['arrow', `align-${align}`, { 'label-first': labelFirst }, className]}>
+  <svg aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">{paths.map((d) => <path d={d} />)}</svg>
+  {hasLabel && <span class="label"><slot /></span>}
+</div>
+
+<style>
+  .arrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    min-width: 0;
+  }
+  .arrow svg { flex-shrink: 0; }
+  .align-start { justify-content: flex-start; }
+  .align-center { justify-content: center; }
+  .align-end { justify-content: flex-end; }
+  .label-first { flex-direction: row-reverse; }
+  .label-first.align-end { justify-content: flex-start; flex-direction: row-reverse; }
+  .label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.3;
+    color: var(--muted);
+  }
+  .label :global(strong) { font-weight: 600; }
+</style>

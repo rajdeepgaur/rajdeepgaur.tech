@@ -1,5 +1,6 @@
 build-spec.md
 banned-terms.txt
+CLAUDE.md
 # build output and deps
 dist/
 .astro/

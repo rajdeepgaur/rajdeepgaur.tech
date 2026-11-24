@@ -3,8 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
 import Method from '../components/Method.astro';
-import SectionLabel from '../components/SectionLabel.astro';
-import ProjectCard from '../components/ProjectCard.astro';
+import Projects from '../components/Projects.astro';
 import Experience from '../components/Experience.astro';
 import Skills from '../components/Skills.astro';
 import Contact from '../components/Contact.astro';
@@ -16,43 +15,8 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
 <Base description={site.seo.description} canonical={`${site.url}/`}>
   <Hero />
   <Method />
-
-  <section id="projects" class="container projects">
-    <div class="head">
-      <div>
-        <SectionLabel>02 / PROJECTS</SectionLabel>
-        <h2 class="section-title">Problems I chose to solve in code.</h2>
-      </div>
-      <p class="intro">Full-stack apps, an AI agent and a WordPress plugin. Each one is live or public. Open them.</p>
-    </div>
-    <div class="grid">
-      {projects.map((p) => <ProjectCard project={p} />)}
-    </div>
-  </section>
-
+  <Projects projects={projects} />
   <Experience />
   <Skills />
   <Contact />
 </Base>
-
-<style>
-  .projects { padding-block: 88px 40px; }
-  .head {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 16px 40px;
-  }
-  .intro { max-width: 420px; color: var(--body-2); }
-  .grid {
-    margin-top: 40px;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 24px;
-  }
-  /* 2-up from 960px (Rajdeep, 20 Nov); matches the image `sizes` in ProjectImage */
-  @media (min-width: 960px) {
-    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  }
-</style>
