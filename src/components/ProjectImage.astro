@@ -7,9 +7,11 @@ interface Props {
   alt: string;
   bg: string;
   fit: 'contain' | 'cover';
+  /** Below 640px only; unset = same as fit (§6, §8). */
+  fitMobile?: 'contain' | 'cover';
 }
 
-const { src, alt, bg, fit } = Astro.props;
+const { src, alt, bg, fit, fitMobile } = Astro.props;
 // Decided 22 Nov: one full-size lossless WebP per screenshot, pixel-identical to the original PNG
 // (lossless/exact options are in astro.config.mjs). Full size keeps UI text sharp when zoomed in.
 // Built-in loading="lazy" only; trade-offs (full-size download on phones) accepted.
@@ -17,7 +19,7 @@ const { src, alt, bg, fit } = Astro.props;
 // the raw PNGs (sharp but ~987 KB), lossless AVIF (heavier than the PNGs).
 ---
 
-<div class:list={['box', fit]} style={`background: ${bg}`}>
+<div class:list={['box', fit, fitMobile && `mobile-${fitMobile}`]} style={`background: ${bg}`}>
   <Image
     src={src}
     alt={alt}
@@ -45,5 +47,16 @@ const { src, alt, bg, fit } = Astro.props;
   .cover :global(img) {
     object-fit: cover;
     object-position: top;
+  }
+  /* fitMobile replaces fit below 640px, centred (1% Better: cover on phones, contain from 640px) */
+  @media (max-width: 639.98px) {
+    .mobile-cover :global(img) {
+      object-fit: cover;
+      object-position: center;
+    }
+    .mobile-contain :global(img) {
+      object-fit: contain;
+      object-position: center;
+    }
   }
 </style>

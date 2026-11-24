@@ -17,6 +17,7 @@ const projects = defineCollection({
       alt: z.string().min(20),
       bg: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
       fit: z.enum(['contain', 'cover']).default('contain'),
+      fitMobile: z.enum(['contain', 'cover']).optional(), // below 640px; unset = same as fit (1% Better: 'cover')
     }),
     links: z.array(z.object({
       label: z.string(),                     // 'Live site', 'GitHub repo', 'Private repo'

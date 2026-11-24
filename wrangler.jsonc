@@ -1,5 +1,7 @@
 {
   "name": "rajdeepgaur-tech",
   "compatibility_date": "2026-11-22",
-  "assets": { "directory": "./dist", "not_found_handling": "404-page" }
+  "assets": { "directory": "./dist", "not_found_handling": "404-page" },
+  // Needed for branch preview builds (`wrangler preview`); empty = same settings as production.
+  "previews": {}
 }
