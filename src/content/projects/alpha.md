@@ -11,6 +11,7 @@ image:
   alt: "Alpha side panel next to a broker chart: a Bullish bias with the written analysis, key support and resistance levels, and the invalidation level"
   bg: "#161719"
   fit: cover
+  position: top
 links:
   - { label: Live site, href: "https://alpha.rajdeepgaur.tech/" }
   - { label: Private repo }

@@ -7,10 +7,12 @@ problem: "WordPress revisions save the whole post, only on save, and undo works 
 built: "A short version history for every block. Compare before restoring (word-by-word changes and every setting that would change), undo any restore, and keep history private in the browser."
 tags: [JavaScript, React, PHP, Gutenberg, IndexedDB, Open source]
 image:
-  src: ../../assets/projects/block-rewind-compare.png
-  alt: "Block Rewind compare view: what restoring an earlier version of a paragraph will change, with the current and restored text side by side"
+  src: ../../assets/projects/block-rewind-editor-sidebar.png
+  alt: "The WordPress editor with the Block Rewind sidebar open: a paragraph's four saved versions, each with its time, a preview of the text and what changed"
   bg: "#FFFFFF"
-  fit: contain
+  fit: cover
+  position: top
+  positionMobile: right top
 links:
   - { label: WordPress.org, href: "https://wordpress.org/plugins/block-rewind/" }
   - { label: GitHub repo, href: "https://github.com/rajdeepgaur/block-rewind" }
@@ -24,11 +26,20 @@ import BlockRewindArchitecture from '../../components/case/diagrams/BlockRewindA
 import Figure from '../../components/case/Figure.astro';
 import TradeoffsTable from '../../components/case/TradeoffsTable.astro';
 import Tested from '../../components/case/Tested.astro';
+import sidebar from '../../assets/projects/block-rewind-editor-sidebar.png';
 import compare from '../../assets/projects/block-rewind-compare.png';
 
 A per-block history sounds simple, but Gutenberg gives you none of the pieces for it: its block IDs change every time the editor loads, and its data changes on every keystroke. Browser storage adds its own problems: it can be slow, full, or cut off when the page closes.
 
 This write-up covers how Block Rewind works around that: the architecture first, then the five ideas it's built on, and the trade-offs I made along the way.
+
+<Figure
+  src={sidebar}
+  alt="The WordPress editor with the Block Rewind sidebar open: a paragraph's four saved versions, each with its time, a preview of the text and what changed"
+  caption="The Block Rewind sidebar: a paragraph's saved versions, newest first, with what changed in each."
+  bg="#FFFFFF"
+  lead
+/>
 
 <Section label="ARCHITECTURE" title="Architecture at a glance">
 

@@ -18,6 +18,8 @@ const projects = defineCollection({
       bg: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
       fit: z.enum(['contain', 'cover']).default('contain'),
       fitMobile: z.enum(['contain', 'cover']).optional(), // below 640px; unset = same as fit (1% Better: 'cover')
+      position: z.string().optional(),       // CSS object-position, e.g. 'top' (Alpha, Block Rewind); unset = centre
+      positionMobile: z.string().optional(), // below 640px; unset = same as position (Block Rewind: 'right top')
     }),
     links: z.array(z.object({
       label: z.string(),                     // 'Live site', 'GitHub repo', 'Private repo'
