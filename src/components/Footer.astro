@@ -1,17 +1,56 @@
-<footer class="container footer">
-  <span>© 2026 Rajdeep Singh Gaur</span>
-  <span>rajdeepgaur.tech</span>
+---
+// Changed 27 Nov (Homepage §6 Footer.astro). DOM order: bug line first (it comes first on phones);
+// from 640px the © line sits on the left via `order`. The year is static on purpose.
+---
+
+<footer class="container site-footer">
+  <p class="bug">Found a bug on this site? <a href="https://github.com/rajdeepgaur/rajdeepgaur.tech/issues" target="_blank" rel="noopener">Open an issue.<span class="visually-hidden"> (opens in new tab)</span></a></p>
+  <p class="meta"><span>© 2026 Rajdeep Singh Gaur</span><span class="sep" aria-hidden="true"> · </span><span>Still learning, still shipping.</span></p>
 </footer>
 
 <style>
-  .footer {
+  .site-footer {
     padding-block: 28px;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    flex-direction: column;
     gap: 12px;
     font-family: var(--font-mono);
     font-size: 13px;
     color: var(--muted);
+  }
+  .meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .sep { display: none; }
+
+  a {
+    color: inherit;
+    white-space: nowrap;
+    position: relative;
+  }
+  /* 44px hit area (§7) without changing the footer's spacing or the focus ring */
+  a::after {
+    content: '';
+    position: absolute;
+    inset: -13px 0;
+  }
+
+  @media (min-width: 640px) {
+    .site-footer {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px 32px;
+    }
+    .bug { order: 2; }
+    .meta {
+      order: 1;
+      display: block;
+    }
+    .meta span { white-space: nowrap; }
+    .sep { display: inline; }
   }
 </style>

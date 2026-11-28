@@ -20,13 +20,13 @@ interface Props {
 const { title = site.seo.title, description, navMode = 'home', canonical, ogType = 'website' } = Astro.props;
 const ogImage = new URL('/og.png', site.url).href;
 const ogImageAlt =
-  'Rajdeep Singh Gaur — A support engineer who builds. 1,500+ support tickets resolved, 100+ WordPress sites built, 4 live projects.';
+  "Rajdeep Singh Gaur — I fix what breaks and build what's missing. 1,500+ support tickets resolved, 100+ WordPress sites built, 4 live projects.";
 const person = {
   '@context': 'https://schema.org',
   '@type': 'Person',
   name: site.name,
   url: `${site.url}/`,
-  jobTitle: 'Technical Support Engineer',
+  jobTitle: 'Technical Support Engineer and Full-Stack Developer',
   sameAs: [site.linkedin, site.github],
 };
 const beaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
