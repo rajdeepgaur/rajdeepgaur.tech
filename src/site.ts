@@ -6,8 +6,8 @@ export const site = {
   linkedin: 'https://www.linkedin.com/in/rajdeep-singh-gaur-793015227/',
   github: 'https://github.com/rajdeepgaur',
   seo: {
-    title: 'Rajdeep Singh Gaur — A support engineer who builds',
+    title: "Rajdeep Singh Gaur — I fix what breaks and build what's missing",
     description:
-      'Technical support engineer and web developer. 1,500+ support tickets resolved, 100+ WordPress sites built, 4 live projects including a WordPress.org plugin.',
+      'Technical support engineer and full-stack developer. 1,500+ support tickets resolved, 100+ WordPress sites built, 4 live projects including a WordPress.org plugin.',
   },
 } as const;
